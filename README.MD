@@ -1,6 +1,6 @@
 # Smartlead MCP Server
 
-A Model Context Protocol (MCP) server implementation for interacting with the Smartlead API. This server provides tools for managing campaigns, leads, and email accounts through Smartlead's API.
+A Model Context Protocol (MCP) server implementation for interacting with the Smartlead API. This server provides tools for managing campaigns through Smartlead's API.
 
 ## Overview
 
