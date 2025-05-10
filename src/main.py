@@ -100,7 +100,13 @@ mcp = FastMCP(
 )
 
 
-@mcp.tool()
+@mcp.tool(
+    parameters={
+        "type": "object",
+        "properties": {},
+        "additionalProperties": False
+    }
+)
 async def list_campaigns(ctx: Context) -> str:
     """List all Campaigns
     
@@ -141,14 +147,14 @@ async def list_campaigns(ctx: Context) -> str:
 
 
 @mcp.tool()
-async def get_campaign(ctx: Context, campaign: str) -> str:
+async def get_campaign(ctx: Context, campaign_id: str) -> str:
     """Get Campaign By Id
     
     This endpoint fetches a campaign based on its ID
     
     Args:
         ctx: The context provided by the MCP server
-        campaign: The ID of the campaign you want to fetch
+        campaign_id: The ID of the campaign you want to fetch
     
     Returns:
         A JSON formatted response:
@@ -173,34 +179,38 @@ async def get_campaign(ctx: Context, campaign: str) -> str:
     """
     try:
         client = await get_client_from_context(ctx)
-        response = await client.get_campaign(campaign)
+        response = await client.get_campaign(campaign_id)
         return format_response(response)
     except Exception as e:
-        logger.error(f"Error getting campaign {campaign}: {str(e)}")
+        logger.error(f"Error getting campaign {campaign_id}: {str(e)}")
         return handle_api_error(e)
 
 
 @mcp.tool()
-async def create_campaign(ctx: Context, campaign_data: Dict[str, Any]) -> str:
+async def create_campaign(ctx: Context, name: str, client_id: Optional[int] = None) -> str:
     """Create Campaign
     
-    This endpoint creates a campaign
+    This endpoint creates a campaign.
     
     Args:
         ctx: The context provided by the MCP server
-        campaign_data: Campaign creation data
+        name: Name of the campaign (required)
+        client_id: Client ID (optional, leave null if not attached to a client)
     
     Returns:
         A JSON formatted response:
         {
-            ok: true,
-            id: 3023,
-            name: "Test email campaign",
-            created_at: "2022-11-07T16:23:24.025929+00:00"
+            "ok": true,
+            "id": 3023,
+            "name": "Test email campaign",
+            "created_at": "2022-11-07T16:23:24.025929+00:00"
         }
     """
     try:
         client = await get_client_from_context(ctx)
+        campaign_data = {"name": name}
+        if client_id is not None:
+            campaign_data["client_id"] = client_id
         response = await client.create_campaign(campaign_data)
         return format_response(response)
     except Exception as e:
@@ -512,7 +522,7 @@ async def get_campaign_analytics(
     
     Args:
         ctx: The context provided by the MCP server
-        campaignId: The ID of the campaign
+        campaign_id: The ID of the campaign
         start_date: Starting point for the date range (YYYY-MM-DD)
         end_date: Ending point for the date range (YYYY-MM-DD)
     

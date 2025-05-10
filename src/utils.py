@@ -151,15 +151,15 @@ class SmartleadClient:
         """
         return await self._request("GET", "campaigns/")
 
-    async def get_campaign(self, campaign: str) -> Dict[str, Any]:
+    async def get_campaign(self, campaign_id: str) -> Dict[str, Any]:
         """
         Get a campaign by ID.
 
         Args:
-            campaign: The ID of the campaign you want to fetch
+            campaign_id: The ID of the campaign you want to fetch
 
         Returns:
-            Campaign details:
+            Campaign details as a JSON object, e.g.:
             {
                 "id": 372,
                 "user_id": 124,
@@ -179,22 +179,24 @@ class SmartleadClient:
                 "follow_up_percentage": 40  # the follow up percentage allocated - assumed 60% is new leads
             }
         """
-        return await self._request("GET", f"campaigns/{campaign}")
+        return await self._request("GET", f"campaigns/{campaign_id}")
 
     async def create_campaign(self, campaign_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Create a campaign.
 
         Args:
-            campaign_data: Campaign creation data
+            campaign_data: Dict with keys:
+                - name (str): Name of the campaign (required)
+                - client_id (int, optional): Client ID (optional, leave out if not attached to a client)
 
         Returns:
             Created campaign details:
             {
-                ok: true,
-                id: 3023,
-                name: "Test email campaign",
-                created_at: "2022-11-07T16:23:24.025929+00:00"
+                "ok": true,
+                "id": 3023,
+                "name": "Test email campaign",
+                "created_at": "2022-11-07T16:23:24.025929+00:00"
             }
         """
         return await self._request("POST", "campaigns/create", json_data=campaign_data)
@@ -215,7 +217,7 @@ class SmartleadClient:
 
         Args:
             campaign_id: The ID of the campaign you want to update
-            timezone: Timezone name in IANA format (e.g., "America/Los_Angeles", "Europe/Helsinki")
+            timezone: Timezone name in IANA format (e.g., "America/Los_Angeles", "Europe/Istanbul")
             days_of_the_week: A number value ranging from 0 to 6; i.e [0,1,2,3,4,5,6]
             start_hour: Time to start the campaign in 24-hour format (HH:MM), e.g., "01:11"
             end_hour: Time to end the campaign in 24-hour format (HH:MM), e.g., "02:22"
@@ -494,7 +496,7 @@ class SmartleadClient:
         This endpoint fetches campaign-specific analytics for a specified date range
 
         Args:
-            campaignId: The ID of the campaign
+            campaign_id: The ID of the campaign
             start_date: Starting point for the date range (YYYY-MM-DD)
             end_date: Ending point for the date range (YYYY-MM-DD)
 
@@ -526,7 +528,7 @@ class SmartleadClient:
             "start_date": start_date,
             "end_date": end_date
         }
-        return await self._request("GET", f"campaigns/{campaignId}/analytics-by-date", params=params)
+        return await self._request("GET", f"campaigns/{campaign_id}/analytics-by-date", params=params)
 
     async def get_campaign_sequence(
         self,
