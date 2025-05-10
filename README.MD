@@ -34,8 +34,8 @@ The server provides comprehensive tools for:
 
 2. Clone this repository:
    ```bash
-   git clone [Github Repo name]
-   cd [directory name]
+   git clone https://github.com/miskakaskinen/Smartlead-Campaign-MCP-server.git
+   cd Smartlead-Campaign-MCP-server
    ```
 
 3. Install dependencies:
