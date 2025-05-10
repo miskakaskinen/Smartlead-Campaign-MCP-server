@@ -66,9 +66,9 @@ Configure the following environment variables in your `.env` file:
 | `TRANSPORT` | Transport protocol (sse) | Yes |
 | `SMARTLEAD_API_KEY` | Your Smartlead API key | Yes |
 | `SMARTLEAD_API_URL` | Smartlead API URL | Yes |
-| `HOST` | Host to bind to (default: 0.0.0.0) | YES |
-| `PORT` | Port to listen on (default: 8050) | YES |
-| `LOG_LEVEL` | Logging level (INFO/DEBUG) | YES |
+| `HOST` | Host to bind to (default: 0.0.0.0) | Yes |
+| `PORT` | Port to listen on (default: 8050) | Yes |
+| `LOG_LEVEL` | Logging level (INFO/DEBUG) | Yes |
 
 ## Running the Server
 
