@@ -1,0 +1,51 @@
+# First, exclude everything
+*
+*/
+
+# Then include only what we need
+
+# Core source files
+!src/
+!src/main.py
+!src/utils.py
+!src/__init__.py
+
+# Build configuration
+!pyproject.toml
+!requirements.txt
+!Dockerfile
+!.dockerignore
+
+# Documentation
+!README.MD
+!.gitignore
+!.env.example
+
+# Make sure these ignore patterns are applied
+.venv/
+**/__pycache__/
+**/*.py[cod]
+**/.DS_Store
+**/smartlead_mcp.egg-info/
+.env
+.cursor/
+.pytest_cache/
+
+# Explicitly exclude these directories
+tests/
+examples/
+development_materials/
+.python-version
+TASK.md
+PLANNING.MD
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
