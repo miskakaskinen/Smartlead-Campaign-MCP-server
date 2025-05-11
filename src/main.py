@@ -100,13 +100,7 @@ mcp = FastMCP(
 )
 
 
-@mcp.tool(
-    parameters={
-        "type": "object",
-        "properties": {},
-        "additionalProperties": False
-    }
-)
+@mcp.tool()
 async def list_campaigns(ctx: Context) -> str:
     """List all Campaigns
     
@@ -187,7 +181,7 @@ async def get_campaign(ctx: Context, campaign_id: str) -> str:
 
 
 @mcp.tool()
-async def create_campaign(ctx: Context, name: str, client_id: Optional[int] = None) -> str:
+async def create_campaign(ctx: Context, name: str, client_id: int = 0) -> str:
     """Create Campaign
     
     This endpoint creates a campaign.
@@ -195,7 +189,7 @@ async def create_campaign(ctx: Context, name: str, client_id: Optional[int] = No
     Args:
         ctx: The context provided by the MCP server
         name: Name of the campaign (required)
-        client_id: Client ID (optional, leave null if not attached to a client)
+        client_id: Client ID (optional, use 0 if not attached to a client; this will send null to the API)
     
     Returns:
         A JSON formatted response:
@@ -209,8 +203,10 @@ async def create_campaign(ctx: Context, name: str, client_id: Optional[int] = No
     try:
         client = await get_client_from_context(ctx)
         campaign_data = {"name": name}
-        if client_id is not None:
+        if client_id != 0:  # Agent provided a specific client ID
             campaign_data["client_id"] = client_id
+        else:  # Agent used sentinel 0, meaning "no client" -> explicitly send null
+            campaign_data["client_id"] = None
         response = await client.create_campaign(campaign_data)
         return format_response(response)
     except Exception as e:
@@ -226,9 +222,9 @@ async def update_campaign_schedule(
     days_of_the_week: List[int],
     start_hour: str,
     end_hour: str,
-    min_time_btw_emails: Optional[int] = None,
-    max_new_leads_per_day: Optional[int] = None,
-    schedule_start_time: Optional[str] = None
+    min_time_btw_emails: int = None,
+    max_new_leads_per_day: int = None,
+    schedule_start_time: str = None
 ) -> str:
     """Update Campaign Schedule
     
@@ -273,21 +269,21 @@ async def update_campaign_schedule(
 async def update_campaign_settings(
     ctx: Context,
     campaign_id: str,
-    name: Optional[str] = None,
-    track_settings: Optional[List[str]] = None,
-    stop_lead_settings: Optional[str] = None,
-    unsubscribe_text: Optional[str] = None,
-    send_as_plain_text: Optional[bool] = None,
-    force_plain_text: Optional[bool] = None,
-    enable_ai_esp_matching: Optional[bool] = None,
-    follow_up_percentage: Optional[int] = None,
-    client_id: Optional[int] = None,
-    add_unsubscribe_tag: Optional[bool] = None,
-    auto_pause_domain_leads_on_reply: Optional[bool] = None,
-    ignore_ss_mailbox_sending_limit: Optional[bool] = None,
-    bounce_autopause_threshold: Optional[str] = None,
-    out_of_office_detection_settings: Optional[Dict[str, Any]] = None,
-    ai_categorisation_options: Optional[List[int]] = None
+    name: str = None,
+    track_settings: List[str] = None,
+    stop_lead_settings: str = None,
+    unsubscribe_text: str = None,
+    send_as_plain_text: bool = None,
+    force_plain_text: bool = None,
+    enable_ai_esp_matching: bool = None,
+    follow_up_percentage: int = None,
+    client_id: int = None,
+    add_unsubscribe_tag: bool = None,
+    auto_pause_domain_leads_on_reply: bool = None,
+    ignore_ss_mailbox_sending_limit: bool = None,
+    bounce_autopause_threshold: str = None,
+    out_of_office_detection_settings: Dict[str, Any] = None,
+    ai_categorisation_options: List[int] = None
 ) -> str:
     """Update Campaign General Settings
     
@@ -717,7 +713,7 @@ async def get_campaign_sequence_analytics(
     campaign_id: str,
     start_date: str,
     end_date: str,
-    time_zone: Optional[str] = None
+    time_zone: str = None
 ) -> str:
     """Get Campaign Sequence Analytics
     
